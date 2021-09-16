@@ -1,0 +1,183 @@
+<div class="row m-4 animated fadeIn">
+  <div class="col-sm-8">
+
+    <div class="card">
+      <div class="card-body">
+
+        <h3 class="mb-3">MERCANCÍAS</h3>
+
+        <form
+          autocomplete="off"
+          [formGroup]="filterForm"
+          #myFilterForm="ngForm"
+          (ngSubmit)="submitFilterForm()"
+        >
+
+          <div class="row">
+
+            <div class="col-sm-3">
+              <div class="col-auto">
+                <label for="name" class="form-label">Nombre</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="name"
+                  formControlName="name"
+                />
+              </div>
+            </div>
+    
+            <div class="col-sm-3">
+              <div class="col-auto">
+                <label for="date" class="form-label">Fecha</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="date"
+                  formControlName="date"
+                />
+              </div>
+            </div>
+    
+            <div class="col-sm-3">
+              <label for="creatorUser" class="form-label">Usuario creador</label>
+              <select
+                class="form-select"
+                id="creatorUser"
+                formControlName="creatorUser"
+              >
+                <option value="">--- Seleccionar ---</option>
+                <option *ngFor="let user of users" [ngValue]="user.id">
+                  {{ user.name }}
+                </option>
+              </select>
+            </div>
+    
+            <div class="col-sm-3 align-self-end">
+              <button type="submit" class="btn btn-sm btn-info text-white">Filtrar</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <table class="table table-hover">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col">Nombre</th>
+            <th scope="col">Producto</th>
+            <th scope="col">Cantidad</th>
+            <th scope="col">Fecha</th>
+            <th scope="col">Usuario</th>
+            <th scope="col">Cargo</th>
+            <th scope="col">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let commodity of listCommodity">
+            <td>{{ commodity.name }}</td>
+            <td>{{ commodity.product }}</td>
+            <td>{{ commodity.quantity }}</td>
+            <td>{{ commodity.dateOfAdmission | date: "shortDate" }}</td>
+            <td>{{ commodity.creatorUser.name }}</td>
+            <td>{{ commodity.creatorUser.position.name }}</td>
+            <td>
+              <button type="button" class="btn btn-sm btn-info me-1 text-white" (click)="getCommodity( 'edit', commodity.id )">
+                <i class="fas fa-edit"></i>
+              </button>
+  
+              <button type="button" class="btn btn-sm btn-danger text-white" (click)="getCommodity( 'remove', commodity.id )">
+                <i class="fa fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <div class="col-sm-4 right-panel">
+
+    <h4 class="text-center pb-3">Formulario</h4>
+
+    <form
+          autocomplete="off"
+          [formGroup]="commodityForm"
+          #myCommodityForm="ngForm"
+          (ngSubmit)="submitCommodityForm()"
+        >
+    
+          <input type="hidden" class="form-control" id="mode" formControlName="mode" />
+          <input type="hidden" class="form-control" id="id" formControlName="id" />
+    
+          <div class="my-2">
+            <label for="name" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="name" formControlName="name">
+          </div>
+          <span *ngIf="commodityForm.get('name').hasError('required') && myCommodityForm.submitted" class="text-danger fw-bold">
+            Campo requerido.
+          </span>
+    
+          <div class="my-2">
+            <label for="product" class="form-label">Producto</label>
+            <input type="text" class="form-control" id="product" formControlName="product" required>
+          </div>
+          <span *ngIf="commodityForm.get('product').hasError('required') && myCommodityForm.submitted" class="text-danger fw-bold">
+            Campo requerido.
+          </span>
+          <span *ngIf="commodityForm.get('product').hasError('maxlength') && myCommodityForm.submitted" class="text-danger fw-bold">
+            Por favor, no escribas más de 30 caracteres.
+          </span>
+    
+          <div class="row">
+    
+            <div class="col-sm-5">
+              <div class="my-2">
+                <label for="quantity" class="form-label">Cantidad</label>
+                <input type="text" class="form-control" id="quantity" formControlName="quantity" [type]="'number'" required>
+              </div>
+              <span *ngIf="commodityForm.get('quantity').hasError('required') && myCommodityForm.submitted" class="text-danger fw-bold">
+                Campo requerido.
+              </span>
+            </div>
+    
+            <div class="col-sm-7">
+              <div class="my-2">
+                <label for="dateOfAdmission" class="form-label">Fecha de ingreso</label>
+                <input type="date" class="form-control" id="dateOfAdmission" formControlName="dateOfAdmission" required />
+              </div>
+              <span *ngIf="commodityForm.get('dateOfAdmission').hasError('required') && myCommodityForm.submitted" class="text-danger fw-bold">
+                Campo requerido.
+              </span>
+            </div>
+          </div>
+    
+          <div class="my-2">
+            <label for="creatorUser" class="form-label">Usuario creador</label>
+            <select
+              class="form-select"
+              id="creatorUser"
+              formControlName="creatorUser" required
+            >
+              <option value="">--- Seleccionar ---</option>
+              <option *ngFor="let user of users" [ngValue]="user.id">
+                {{ user.name }}
+              </option>
+            </select>
+          </div>
+          <span *ngIf="commodityForm.get('creatorUser').hasError('required') && myCommodityForm.submitted" class="text-danger fw-bold">
+            Campo requerido.
+          </span>
+    
+          <div class="my-3" [align]="'right'">
+            <button type="submit" class="btn btn-info mx-2 text-white">{{ labelButton }}</button>
+            <button type="button" class="btn btn-danger text-white" (click)="clearCommodityForm()">Cancelar</button>
+          </div>
+    
+        </form>
+
+  </div>
+
+</div>

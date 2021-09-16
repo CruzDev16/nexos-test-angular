@@ -1,0 +1,70 @@
+<div class="row m-4 animated fadeIn">
+  <div class="col-sm-8">
+
+    <div class="card">
+      <div class="card-body">
+
+        <h3 class="mb-3">Cargos</h3>
+
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <table class="table table-hover">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col">Nombre</th>
+            <th scope="col">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let position of positions">
+            <td>{{ position.name }}</td>
+            <td>
+              <button type="button" class="btn btn-sm btn-info me-1 text-white" (click)="getPosition( 'edit', position.id )">
+                <i class="fas fa-edit"></i>
+              </button>
+  
+              <button type="button" class="btn btn-sm btn-danger text-white" (click)="getPosition( 'remove', position.id )">
+                <i class="fa fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <div class="col-sm-4 right-panel">
+
+    <h4 class="text-center pb-3">Formulario</h4>
+
+    <form
+          autocomplete="off"
+          [formGroup]="positionForm"
+          #myPositionForm="ngForm"
+          (ngSubmit)="submitPositionForm()"
+        >
+    
+          <input type="hidden" class="form-control" id="mode" formControlName="mode" />
+          <input type="hidden" class="form-control" id="id" formControlName="id" />
+    
+          <div class="my-2">
+            <label for="name" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="name" formControlName="name">
+          </div>
+          <span *ngIf="positionForm.get('name').hasError('required') && myPositionForm.submitted" class="text-danger fw-bold">
+            Campo requerido.
+          </span>
+    
+          <div class="my-3" [align]="'right'">
+            <button type="submit" class="btn btn-info mx-2 text-white">{{ labelButton }}</button>
+            <button type="button" class="btn btn-danger text-white" (click)="clearPositionForm()">Cancelar</button>
+          </div>
+    
+        </form>
+
+  </div>
+
+</div>
